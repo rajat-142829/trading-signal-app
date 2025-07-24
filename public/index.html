@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Live Signal App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #333;
+    }
+    .data {
+      font-size: 1.5em;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>📡 Live Trading Signal</h1>
+  <div class="data">Asset: <span id="asset">Loading...</span></div>
+  <div class="data">Signal: <span id="signal">Loading...</span></div>
+  <div class="data">Score: <span id="score">Loading...</span></div>
+  <div class="data">Rate: <span id="rate">Loading...</span></div>
+
+  <script>
+    function fetchSignal() {
+      fetch("/api/signal")
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("asset").innerText = data.asset;
+          document.getElementById("signal").innerText = data.signal;
+          document.getElementById("score").innerText = data.score;
+          document.getElementById("rate").innerText = data.liveRate;
+        })
+        .catch(err => {
+          console.error("Fetch error:", err);
+          alert("Signal API fetch failed!");
+        });
+    }
+
+    fetchSignal();
+    setInterval(fetchSignal, 10000);
+  </script>
+</body>
+</html>
