@@ -4,20 +4,27 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// API key from environment
 const API_KEY = process.env.API_KEY;
+
+// Available OTC assets
+const assets = [
+  'Litecoin (OTC)', 'EU50 (OTC)', 'Ronin (OTC)',
+  'IOTA (OTC)', 'Nike Inc (OTC)', 'Snap Inc (OTC)',
+  'US 100 (OTC)', 'Jupiter (OTC)', 'Sandbox (OTC)'
+];
 
 // Serve static files from 'public' folder
 app.use(express.static('public'));
 
-// API route for signal
+// API: Realistic signal generator
 app.get('/api/signal', async (req, res) => {
   try {
+    const randomAsset = assets[Math.floor(Math.random() * assets.length)];
     const signal = {
-      asset: 'EUR/USD',
+      asset: randomAsset,
       signal: Math.random() > 0.5 ? 'CALL' : 'PUT',
-      score: Math.floor(Math.random() * 100),
-      liveRate: (Math.random() * 2 + 1.1).toFixed(4),
+      score: Math.floor(Math.random() * 41) + 60, // Score 60–100
+      liveRate: (Math.random() * 0.5 + 1.1).toFixed(4),
       keyUsed: API_KEY
     };
     res.json(signal);
@@ -26,9 +33,9 @@ app.get('/api/signal', async (req, res) => {
   }
 });
 
-// Fallback route: if no route matches, send index.html
+// Fallback for index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 app.listen(port, () => {
